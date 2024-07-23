@@ -8,7 +8,7 @@ function iniciarIniciarSesion(){
     $contrasenaForm = isset($_POST['password']) ? $_POST['password'] : '';
     
     if (iniciarSesion($usuarioForm, $contrasenaForm)) {
-        header("Location: Interfaz.php");
+        header("Location: principal.php");
         exit();
     }
     
@@ -20,6 +20,7 @@ function interfazIniciarSesion(){
     <!DOCTYPE html>
     <html lang="es">
         <head>
+            <!-- Meta -->
             <meta charset="utf-8">
             <meta content="width=device-width, initial-scale=1.0" name="viewport">
             <title>Iniciar sesión como alumno</title>
@@ -109,6 +110,7 @@ function interfazIniciarSesion(){
                     </section>
                 </div>
             </main><!-- End #main -->
+            
             <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
         </body>
     </html>

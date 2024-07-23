@@ -1,65 +1,42 @@
 <?php
+require_once 'baseDatos.php';
+
 session_start();
 
-function conectar() {
-    define('DB_SERVIDOR', 'localhost');
-    define('DB_USUARIO', 'root');
-    define('DB_CONTRASENA', '');
-    define('DB_NOMBRE', 'SIARUAlumnos');
-    
-    return mysqli_connect(DB_SERVIDOR, DB_USUARIO, DB_CONTRASENA);
-}
-
-//Ejecutar consulta
-function consultar($conexion, $consulta){
-    mysqli_select_db($conexion, DB_NOMBRE);
-    return mysqli_query($conexion, $consulta);
-}
-
-//Verificar login
-function verificarUsuarioBaseDatos($usuario, $contrasena) {
-    $conexion = conectar();
-    
-    $usuarioLim = mysqli_real_escape_string($conexion, $usuario);
-    $contrasenaLim = mysqli_real_escape_string($conexion, $contrasena);
-    
-    $consulta = "SELECT * FROM usuario WHERE nombreUsuario = '$usuarioLim' AND password = '$contrasenaLim'";
-    
-    $resultado = consultar($conexion, $consulta);
-    
-    if (mysqli_num_rows($resultado) == 1) {
-        return 1;
-    }else{
-        return 0;
-    }
-}
-
-//Extraer registro
-function extraerRegistro($usuario, $contrasena) {
-    $conexion = conectar();
-    
-    $usuarioLim = mysqli_real_escape_string($conexion, $usuario);
-    
-    $contrasenaLim = mysqli_real_escape_string($conexion, $contrasena);
-    
-    $consulta = "SELECT * FROM usuario WHERE nombreUsuario = '$usuario' AND password = '$contrasena'";
-    
-    return mysqli_fetch_array(consultar($conexion, $consulta));
-}
-
+/**
+ * Establece las variables de sesión mediante el arreglo relacional de un
+ * registro.
+ * @param type $registro Arreglo relacional del que se asgnarán los valores.
+ */
 function establecerSesion($registro){
     $_SESSION['idusuario'] = $registro['idUsuario'];
     $_SESSION['usuario'] = $registro['nombreUsuario'];
     $_SESSION['contrasena'] = $registro['password'];
 }
 
+/**
+ * Verifica que se haya iniciado sesión mediante una variable de sesión.
+ * @return type Verdadero si está definida la variable o falso si no lo está.
+ */
+function esSesionIniciada(){
+    return isset($_SESSION['idusuario']);
+}
+
+/**
+ * Verifica que se haya iniciado sesión y de no ser así verifica que sea un
+ * usuario mediante el nombre de usuario y contraseña recibidos del formulario,
+ * extrae y establece una nueva sesión.
+ * @param type $usuarioForm Nombre de usuario recibido de formulario.
+ * @param type $contrasenaForm Contraseña de usuario recibida de formulario.
+ * @return bool Verdadero si ya hay una sesión iniciada o está registrado en la
+ * base de datos, o falso si no está registrado en la base de datos.
+ */
 function iniciarSesion($usuarioForm, $contrasenaForm){
-    //Verificar el loggin
-    if (isset($_SESSION['idusuario'])) {
+    if (esSesionIniciada()) {
         return true;
     }else{
-        if (verificarUsuarioBaseDatos($usuarioForm, $contrasenaForm) == 1) {
-            $registro = extraerRegistro($usuarioForm, $contrasenaForm);
+        if (esUsuario($usuarioForm, $contrasenaForm)) {
+            $registro = extraerRegistroUsuario($usuarioForm, $contrasenaForm);
             establecerSesion($registro);
             return true;
         } else {
