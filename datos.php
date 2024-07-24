@@ -1,4 +1,18 @@
 <?php
+
+function iniciarDatos(){
+    if (esSesionIniciada() == false) {
+        header("Location: iniciarSesion.php");
+        exit();
+    }
+    
+    interfazDatos();
+}
+
+function interfazDatos(){
+    
+}
+
 // datos.php
 // Datos del usuario (Ejemplo, estos deberían venir de una base de datos o sesión)
 $nombre_completo = "usuario sacado de la base";
@@ -8,6 +22,8 @@ $carrera = "Ingeniería de Software";
 $semestre = "6° Semestre";
 ?>
 
+<!DOCTYPE html>
+<body>
 <div class="col-12">
     <div class="card recent-sales overflow-auto">
         <div class="card-body">
@@ -45,3 +61,8 @@ $semestre = "6° Semestre";
         </div>
     </div>
 </div>
+            </body>
+    </html>
+
+<?php
+?>

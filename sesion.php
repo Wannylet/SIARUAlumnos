@@ -25,7 +25,7 @@ function esSesionIniciada(){
 /**
  * Verifica que se haya iniciado sesión y de no ser así verifica que sea un
  * usuario mediante el nombre de usuario y contraseña recibidos del formulario,
- * extrae y establece una nueva sesión.
+ * extrae el registro y establece una nueva sesión.
  * @param type $usuarioForm Nombre de usuario recibido de formulario.
  * @param type $contrasenaForm Contraseña de usuario recibida de formulario.
  * @return bool Verdadero si ya hay una sesión iniciada o está registrado en la
