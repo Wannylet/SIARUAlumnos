@@ -4,6 +4,16 @@ require_once 'baseDatos.php';
 session_start();
 
 /**
+ * Destruye la sesión actual.
+ */
+function destruirSesion(){
+    $_SESSION = array();
+    
+    session_destroy();
+    header('location: iniciarSesion.php');
+}
+
+/**
  * Establece las variables de sesión mediante el arreglo relacional de un
  * registro.
  * @param type $registro Arreglo relacional del que se asgnarán los valores.
@@ -32,18 +42,23 @@ function esSesionIniciada(){
  * base de datos, o falso si no está registrado en la base de datos.
  */
 function iniciarSesion($usuarioForm, $contrasenaForm){
-    if (esSesionIniciada()) {
-        return true;
-    }else{
-        if (esUsuario($usuarioForm, $contrasenaForm)) {
-            $registro = extraerRegistroUsuario($usuarioForm, $contrasenaForm);
-            establecerSesion($registro);
+    if (conectar()) {
+        if (esSesionIniciada()) {
             return true;
         } else {
-            if ($usuarioForm ==! '') {
-                echo '<script language="javascript">alert("El usuario o la contraseña son incorrectos, inténtelo nuevamente.");</script>';
+            if (esUsuarioAlumno($usuarioForm, $contrasenaForm)) {
+                $registro = extraerRegistroUsuario($usuarioForm, $contrasenaForm);
+                establecerSesion($registro);
+                return true;
+            } else {
+                if ($usuarioForm ==! '') {
+                    echo '<script language="javascript">alert("El usuario o la contraseña son incorrectos, inténtelo nuevamente.");</script>';
+                }
+                return false;
             }
-            return false;
         }
+    } else {
+        echo '<script language="javascript">alert("Error al conectar a la base de datos, inténtelo más tarde.");</script>';
+        return false;
     }
 }

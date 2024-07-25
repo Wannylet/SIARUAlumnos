@@ -10,9 +10,9 @@ function iniciarIniciarSesion(){
     if (iniciarSesion($usuarioForm, $contrasenaForm)) {
         header("Location: principal.php");
         exit();
+    }else{
+        interfazIniciarSesion();
     }
-    
-    interfazIniciarSesion();
 }
 
 function interfazIniciarSesion(){
@@ -109,9 +109,7 @@ function interfazIniciarSesion(){
                         </div>
                     </section>
                 </div>
-            </main><!-- End #main -->
-            
-            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+            </main>
         </body>
     </html>
     <?php

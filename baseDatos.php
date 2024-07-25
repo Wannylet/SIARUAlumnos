@@ -12,7 +12,12 @@ function conectar() {
         define('DB_NOMBRE', 'SIARUAlumnos');
     }
     
-    return mysqli_connect(DB_SERVIDOR, DB_USUARIO, DB_CONTRASENA);
+    try {
+        $conexion = mysqli_connect(DB_SERVIDOR, DB_USUARIO, DB_CONTRASENA);
+        return $conexion;
+    } catch (Exception $ex) {
+        return null;
+    }
 }
 
 /**
@@ -46,22 +51,39 @@ function extraerRegistroUsuario($usuario, $contrasena) {
 }
 
 /**
+ * Extrae un registro de una tabla mediante el nombre de la tabla, el campo
+ * de referencia y un id o dato del que buscar.
+ * @param type $tabla Nombre de tabla.
+ * @param type $campo Nombre de campo.
+ * @param type $idDato ID o dato referenciado. 
+ * @return type Arreglo relacional de registro.
+ */
+function extraerRegistroTabla($tabla, $campo, $idDato) {
+    $conexion = conectar();
+    
+    $consulta = "SELECT * FROM $tabla WHERE $campo = $idDato";
+    
+    return mysqli_fetch_array(consultar($conexion, $consulta));
+}
+
+/**
  * Verifica que haya un usuario registrado mediante su nombre de usuario y
  * contraseña en la base de datos.
  * @param type $usuario Nombre de usuario.
  * @param type $contrasena Contraseña de ususario.
  * @return int Verdadero si el número de filas es uno o falso si no lo es.
  */
-function esUsuario($usuario, $contrasena) {
+function esUsuarioAlumno($usuario, $contrasena) {
     $conexion = conectar();
     
     $usuarioLim = mysqli_real_escape_string($conexion, $usuario);
     $contrasenaLim = mysqli_real_escape_string($conexion, $contrasena);
     
-    $consulta = "SELECT * FROM usuario WHERE nombreUsuario = '$usuarioLim' AND password = '$contrasenaLim'";
+    $consulta = "SELECT * FROM usuario WHERE nombreUsuario = '$usuarioLim' AND password = '$contrasenaLim' AND tipoUsuario = '0'";
     
     $resultado = consultar($conexion, $consulta);
     
-    return mysqli_num_rows($resultado) == 1;
+    $numFilas = mysqli_num_rows($resultado) == 1 ? true : false;
+    return $numFilas;
 }
 ?>

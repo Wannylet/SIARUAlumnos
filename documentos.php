@@ -5,14 +5,53 @@ iniciarPrincipal();
 
 function iniciarPrincipal(){
     if (iniciarSesion($_SESSION['usuario'], $_SESSION['contrasena'])) {
-        interfazPrincipal();
+        interfazDocumentos();
     }else{
         header("Location: iniciarSesion.php");
         exit();
     }
 }
 
-function interfazPrincipal(){
+function interfazDocumentos(){
+    $datosPersonal = extraerRegistroTabla("datosPersonal", "fk_idUsuario", $_SESSION['idusuario']);
+    
+    $cedula = $datosPersonal['cedula'];
+    $pathCedula = $datosPersonal['pathCedula'];
+    $pathINSS = $datosPersonal['pathINSS'];
+    $ultimoGrado = $datosPersonal['ultimoGrado'];
+    
+    if (!$cedula) {
+        $cedula = "Información no proporcionada";
+    }
+    
+    if (!is_file($pathCedula) && !file_exists($pathCedula)) {
+        $pathCedula = "documentos.php";
+    }
+    
+    if (!is_file($pathINSS) && !file_exists($pathINSS)) {
+        $pathINSS = "documentos.php";
+    }
+    
+    switch ($ultimoGrado) {
+        case 'P':
+            $ultimoGrado = "Primaria";
+            break;
+        case 'S':
+            $ultimoGrado = "Secundaria";
+            break;
+        case 'B':
+            $ultimoGrado = "Bachillerato";
+            break;
+        case 'L':
+            $ultimoGrado = "Licenciatura";
+            break;
+        case 'M':
+            $ultimoGrado = "Maestría";
+            break;
+        case 'D':
+            $ultimoGrado = "Doctorado";
+            break;
+    }
     ?>
     <!DOCTYPE html>
     <html lang="es">
@@ -204,39 +243,57 @@ function interfazPrincipal(){
                 <div class="pagetitle">
                     
                     <!-- Ruta de navegación -->
-                    <h1>Página de inicio</h1>
+                    <h1>Documentos</h1>
                     <nav>
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="principal.php">Inicio</a></li>
+                            <li class="breadcrumb-item active">Documentos</li>
                         </ol>
                     </nav>
                     
-                    <section class="section statistics">
-                        <!-- Estadísticas del alumno -->
+                    <section class="section documents">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Rendimiento</h5>
-                                <canvas id="performanceChart"></canvas>
+                                <h5 class="card-title">Datos personales</h5>
                                 
-                                <!-- Acciones recientes -->
-                                <h5 class="card-title">Acciones recientes</h5>
-                                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    A simple info alert with icon—check it out!
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Documento</th>
+                                            <th scope="col">Información</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <tr>
+                                            <td scope="row">Cédula</td>
+                                            <td>
+                                                <a target="_blank" href=<?php echo $pathCedula?>>
+                                                <?php echo $cedula?></a>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td scope="row">INSS</td>
+                                            <td>
+                                                <a target="_blank" href=<?php echo $pathINSS?>>
+                                                <?php echo $datosPersonal['INSS']?></a>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td scope="row">Último grado</td>
+                                            <td>
+                                                <?php echo $ultimoGrado?>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </section>
                 </div>
             </main>
-            
-            <!-- ======= Listeners de componentes ======= -->
-            <script type="text/javascript">
-                document.getElementById('').addEventListener('click', function(){
-                    
-                });
-            </script>
         </body>
     </html>
     <?php
