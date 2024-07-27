@@ -234,7 +234,7 @@ function interfazCuenta(){
                     
                     <!-- Enlace a otra página -->
                     <li class="nav-item">
-                        <a class="nav-link collapsed" href="cuenta.php">
+                        <a class="nav-link" href="cuenta.php">
                             <i class="bi bi-person-circle"></i>
                             <span>Cuenta</span>
                         </a>

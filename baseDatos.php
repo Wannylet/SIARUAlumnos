@@ -83,8 +83,6 @@ function actualizarDatoRegistro($tabla, $campo, $dato, $campoRef, $datoRef) {
     
     $consulta = "UPDATE $tabla SET $campo = '$datoLim' WHERE $campoRef = $datoRef";
     
-    echo $consulta;
-    
     return consultar($conexion, $consulta);
 }
 

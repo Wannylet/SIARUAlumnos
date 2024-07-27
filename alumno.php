@@ -188,7 +188,7 @@ function interfazAlumno(){
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link collapsed" href="alumno.php">
+                        <a class="nav-link" href="alumno.php">
                             <i class="bi bi-file-text"></i>
                             <span>Alumno</span>
                         </a>

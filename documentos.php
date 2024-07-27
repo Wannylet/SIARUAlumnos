@@ -183,7 +183,7 @@ function interfazDocumentos(){
                     <li class="nav-heading">Principal</li>
                     
                     <li class="nav-item">
-                        <a class="nav-link collapsed" href="documentos.php">
+                        <a class="nav-link" href="documentos.php">
                             <i class="bi bi-person"></i>
                             <span>Documentos</span>
                         </a>

@@ -1,22 +1,23 @@
 <?php
     require_once 'sesion.php';
     
-    if (isset($_FILES['archivoImagenCuenta'])) {
+    if (isset($_FILES['archivoImagenCuenta']) && $_FILES['archivoImagenCuenta']['error'] === UPLOAD_ERR_OK && $_FILES['archivoImagenCuenta']['size'] > 0) {
         $imgCuenta = $_FILES['archivoImagenCuenta'];
         
         $rutaInicial = $imgCuenta['tmp_name'];
         $rutaDestino = "assets/img/imgCustom.jpg";
-        $directorio = "assets/img/";
+        $directorio = dirname($rutaDestino);
         
-        if (!file_exists($rutaDestino)) {
+        if (!is_dir($directorio)) {
             mkdir($directorio, 0775, true);
-        }else{
+        }
+        
+        if (!is_file($rutaDestino) && !file_exists($rutaDestino)) {
             unlink($rutaDestino);
         }
         
         if (is_uploaded_file($rutaInicial)) {
             move_uploaded_file($rutaInicial, $rutaDestino);
-            echo "directorio modificado";
         }
     }
     
@@ -26,12 +27,13 @@
         actualizarDatoRegistro("usuario", "nombreUsuario", $nombreUsuario, "idUsuario", $_SESSION['idusuario']);
     }
     
-    if (!empty($_POST['contrasenaCuenta'])) {
-        $contrasena = $_POST['contrasenaCuenta'];
+    if (!empty($_POST['nuevaContrasena'])) {
+        $contrasena = $_POST['nuevaContrasena'];
         
         actualizarDatoRegistro("usuario", "password", $contrasena, "idUsuario", $_SESSION['idusuario']);
     }
     
-    header("Location: cuenta.php");
+    echo '<script language="javascript">alert("Cambios guardados correctamente.");</script>';
+    
+    echo '<script language="javascript">window.location="cuenta.php";</script>';
 ?>
-
