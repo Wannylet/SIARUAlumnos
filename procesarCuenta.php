@@ -27,8 +27,8 @@
         actualizarDatoRegistro("usuario", "nombreUsuario", $nombreUsuario, "idUsuario", $_SESSION['idusuario']);
     }
     
-    if (!empty($_POST['nuevaContrasena'])) {
-        $contrasena = $_POST['nuevaContrasena'];
+    if (!empty($_POST['contrasenaCuenta'])) {
+        $contrasena = $_POST['contrasenaCuenta'];
         
         actualizarDatoRegistro("usuario", "password", $contrasena, "idUsuario", $_SESSION['idusuario']);
     }
