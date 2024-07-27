@@ -13,6 +13,12 @@ function iniciarPrincipal(){
 }
 
 function interfazPrincipal(){
+    $datosUsuario = extraerRegistroTabla("usuario", "idUsuario", $_SESSION['idusuario']);
+    
+    $imgCuenta = "assets/img/imgCustom.jpg";
+    if (!is_file($imgCuenta) && !file_exists($imgCuenta)) {
+        $imgCuenta = "assets/img/profile-img.jpg";
+    }
     ?>
     <!DOCTYPE html>
     <html lang="es">
@@ -77,8 +83,8 @@ function interfazPrincipal(){
                             
                             <!-- Imagen de perfil -->
                             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                                <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                                <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                                <img src=<?php echo $imgCuenta?> alt="Profile" class="rounded-circle" width="32" height="32">
+                                <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $datosUsuario['nombreUsuario']?></span>
                             </a>
                             
                             <!-- Menu desplegable de perfil -->
@@ -86,7 +92,7 @@ function interfazPrincipal(){
                                 
                                 <!-- Título de usuario -->
                                 <li class="dropdown-header">
-                                    <h6>Aquí va el nombre de usuario</h6>
+                                    <h6><?php echo $datosUsuario['nombres'] . ' ' . $datosUsuario['apellidoP'] . ' ' . $datosUsuario['apellidoM']?></h6>
                                     <span>Alumno</span>
                                 </li>
                                 

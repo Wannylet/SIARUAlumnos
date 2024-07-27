@@ -76,7 +76,7 @@ function interfazIniciarSesion(){
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             
-                                            <form class="row g-3 needs-validation" action="iniciarSesion.php" method="POST">
+                                            <form class="row g-3 needs-validation" action="iniciarSesion.php" method="post">
                                                 
                                                 <div class="pt-4 pb-2">
                                                     <h5 class="card-title text-center pb-0 fs-4">Iniciar sesión</h5>
@@ -87,18 +87,16 @@ function interfazIniciarSesion(){
                                                     <label for="yourUsername" class="form-label">Nombre de usuario</label>
                                                     <div class="input-group has-validation">
                                                         <input type="text" name="username" id="username" class="form-control" required>
-                                                        <div class="invalid-feedback">Por favor, ingrese su usuario.</div>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-12">
                                                     <label for="yourPassword" class="form-label">Contraseña</label>
                                                     <input type="password" name="password" id="password" class="form-control" required>
-                                                    <div class="invalid-feedback">Por favor, ingrese su contraseña.</div>
                                                 </div>
                                                 
                                                 <div class="col-12">
-                                                    <input class="btn btn-primary w-100" type="submit" id="login" value="Ingresar">
+                                                    <input class="btn btn-primary w-100" type="submit" id="iniciarSesion" value="Ingresar">
                                                 </div>
                                                 
                                             </form>

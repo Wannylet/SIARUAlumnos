@@ -5,53 +5,59 @@ iniciarPrincipal();
 
 function iniciarPrincipal(){
     if (iniciarSesion($_SESSION['usuario'], $_SESSION['contrasena'])) {
-        interfazDocumentos();
+        interfazCuenta();
     }else{
         header("Location: iniciarSesion.php");
         exit();
     }
 }
 
-function interfazDocumentos(){
+function interfazCuenta(){
     $datosUsuario = extraerRegistroTabla("usuario", "idUsuario", $_SESSION['idusuario']);
     
-    $datosPersonal = extraerRegistroTabla("datosPersonal", "fk_idUsuario", $_SESSION['idusuario']);
+    $pathRFC = $datosUsuario['pathRFC'];
+    $pathCURP = $datosUsuario['pathCURP'];
+    $tipoUsuario = $datosUsuario['tipoUsuario'];
+    $genero = $datosUsuario['genero'];
     
-    $cedula = $datosPersonal['cedula'];
-    $pathCedula = $datosPersonal['pathCedula'];
-    $pathINSS = $datosPersonal['pathINSS'];
-    $ultimoGrado = $datosPersonal['ultimoGrado'];
-    
-    if (!$cedula) {
-        $cedula = "Información no proporcionada";
+    if (!is_file($pathRFC) && !file_exists($pathRFC)) {
+        $pathRFC = "cuenta.php";
     }
     
-    if (!is_file($pathCedula) && !file_exists($pathCedula)) {
-        $pathCedula = "documentos.php";
+    if (!is_file($pathCURP) && !file_exists($pathCURP)) {
+        $pathCURP = "cuenta.php";
     }
     
-    if (!is_file($pathINSS) && !file_exists($pathINSS)) {
-        $pathINSS = "documentos.php";
+    switch ($tipoUsuario) {
+        case 0:
+            $tipoUsuario = "Alumno";
+            break;
+        case 1:
+            $tipoUsuario = "Profesor";
+            break;
+        case 2:
+            $tipoUsuario = "Recepción";
+            break;
+        case 3:
+            $tipoUsuario = "Prefectura";
+            break;
+        case 4:
+            $tipoUsuario = "Coordinación";
+            break;
+        case 5:
+            $tipoUsuario = "Administración";
+            break;
     }
     
-    switch ($ultimoGrado) {
-        case 'P':
-            $ultimoGrado = "Primaria";
+    switch ($genero) {
+        case 'H':
+            $genero = "Masculino";
             break;
-        case 'S':
-            $ultimoGrado = "Secundaria";
+        case 'F':
+            $genero = "Femenino";
             break;
-        case 'B':
-            $ultimoGrado = "Bachillerato";
-            break;
-        case 'L':
-            $ultimoGrado = "Licenciatura";
-            break;
-        case 'M':
-            $ultimoGrado = "Maestría";
-            break;
-        case 'D':
-            $ultimoGrado = "Doctorado";
+        case 'O':
+            $genero = "Otro";
             break;
     }
     
@@ -250,57 +256,179 @@ function interfazDocumentos(){
                 <div class="pagetitle">
                     
                     <!-- Ruta de navegación -->
-                    <h1>Documentos</h1>
+                    <h1>Cuenta</h1>
+                    
                     <nav>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="principal.php">Inicio</a></li>
-                            <li class="breadcrumb-item active">Documentos</li>
+                            <li class="breadcrumb-item active">Cuenta</li>
                         </ol>
                     </nav>
                     
                     <section class="section documents">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Datos personales</h5>
+                                <h5 class="card-title">Datos de usuario</h5>
                                 
-                                <table class="table table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Documento</th>
-                                            <th scope="col">Información</th>
-                                        </tr>
-                                    </thead>
+                                <form id="formularioCuenta" class="row g-3 needs-validation" action="procesarCuenta.php" method="post" enctype="multipart/form-data">
+                                    <div>
+                                        <a target="_blank" href=<?php echo $imgCuenta?>><img src=<?php echo $imgCuenta?> alt="Profile" class="rounded-circle" width="150" height="150"></a>
+                                        <br>
+                                        <br>
+                                        <input class="form-control" type="file" name="archivoImagenCuenta" title="Cambiar imagen de cuenta" accept=".jpg"/>
+                                    </div>
+                                    <br>
                                     
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row">Cédula</td>
-                                            <td>
-                                                <a target="_blank" href=<?php echo $pathCedula?>>
-                                                <?php echo $cedula?></a>
-                                            </td>
-                                        </tr>
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Dato</th>
+                                                <th scope="col">Información</th>
+                                            </tr>
+                                        </thead>
                                         
-                                        <tr>
-                                            <td scope="row">INSS</td>
-                                            <td>
-                                                <a target="_blank" href=<?php echo $pathINSS?>>
-                                                <?php echo $datosPersonal['INSS']?></a>
-                                            </td>
-                                        </tr>
-                                        
-                                        <tr>
-                                            <td scope="row">Último grado</td>
-                                            <td>
-                                                <?php echo $ultimoGrado?>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row">Nombre de usuario</td>
+                                                <td>
+                                                    <input required maxlength="8" type="text" class="form-control" name="nombreUsuario" value=<?php echo $datosUsuario['nombreUsuario']?>>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Contraseña</td>
+                                                <td>
+                                                    <input maxlength="255" type="password" class="form-control" id="contrasena" name="contrasenaCuenta">
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Verificar contraseña</td>
+                                                <td>
+                                                    <input maxlength="255" type="password" class="form-control" id="verificarContrasena">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td scope="row">Nombre personal</td>
+                                                <td>
+                                                    <?php echo $datosUsuario['nombres'] . ' ' . $datosUsuario['apellidoP'] . ' ' . $datosUsuario['apellidoM'] ?>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Tipo de usuario</td>
+                                                <td>
+                                                    <?php echo $tipoUsuario?>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Fecha de nacimiento</td>
+                                                <td>
+                                                    <?php echo $datosUsuario['dob']?>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Género</td>
+                                                <td>
+                                                    <?php echo $genero?>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">RFC</td>
+                                                <td>
+                                                    <a target="_blank" href=<?php echo $pathRFC?>>
+                                                        <?php echo $datosUsuario['RFC']?></a>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">CURP</td>
+                                                <td>
+                                                    <a target="_blank" href=<?php echo $pathCURP?>>
+                                                        <?php echo $datosUsuario['CURP']?></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-primary" id="guardarCuenta">Guardar cambios</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </section>
                 </div>
             </main>
+            
+            <!-- ======= Listeners de componentes ======= -->
+            <script type="text/javascript">
+                document.getElementById('contrasena').addEventListener('input', function() {
+                    const verificarContrasena = document.getElementById('verificarContrasena');
+                    
+                    if (this.value.length > 0) {
+                        verificarContrasena.setAttribute('required', 'required');
+                    } else {
+                        verificarContrasena.removeAttribute('required');
+                    }
+                });
+                
+                document.getElementById('formularioCuenta').addEventListener('submit', function(event) {
+                    const contrasena = document.getElementById('contrasena').value;
+                    const verificarContrasena = document.getElementById('verificarContrasena').value;
+                    
+                    if (contrasena.length > 0) {
+                        if (contrasena.length < 8) {
+                            event.preventDefault();
+                            alert('La contraseña debe contener al menos 8 caracteres.');
+                        }else if(!contieneMinuscula(contrasena)){
+                            event.preventDefault();
+                            alert('La contraseña debe contener al menos una minúscula.');
+                        }else if(!contieneMayuscula(contrasena)){
+                            event.preventDefault();
+                            alert('La contraseña debe contener al menos una mayúscula.');
+                        }else if(!contieneNumero(contrasena)){
+                            event.preventDefault();
+                            alert('La contraseña debe contener al menos un número.');
+                        }else if(!contieneCaracterEspecial(contrasena)){
+                            event.preventDefault();
+                            alert('La contraseña debe contener al menos un carácter especial.');
+                        }
+                    }else if (contrasena.length > 0 && contrasena.length < 8) {
+                        event.preventDefault();
+                        alert('La contraseña debe contener al menos 8 caracteres, una letra, un número y un carácter especial.');
+                    }
+                    
+                    if (contrasena.length > 0 && contrasena !== verificarContrasena) {
+                        event.preventDefault();
+                        alert('Las contraseñas no coinciden.');
+                    }
+                });
+                
+                function contieneMinuscula(cadena) {
+                    const regex = /[a-z]/;
+                    return regex.test(cadena);
+                }
+                
+                function contieneMayuscula(cadena) {
+                    const regex = /[A-Z]/;
+                    return regex.test(cadena);
+                }
+                
+                function contieneNumero(cadena) {
+                    const regex = /\d/;
+                    return regex.test(cadena);
+                }
+                
+                function contieneCaracterEspecial(cadena) {
+                    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+                    return regex.test(cadena);
+                }
+            </script>
         </body>
     </html>
     <?php

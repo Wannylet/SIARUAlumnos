@@ -52,18 +52,40 @@ function extraerRegistroUsuario($usuario, $contrasena) {
 
 /**
  * Extrae un registro de una tabla mediante el nombre de la tabla, el campo
- * de referencia y un id o dato del que buscar.
+ * de referencia y el dato de referencia.
  * @param type $tabla Nombre de tabla.
- * @param type $campo Nombre de campo.
- * @param type $idDato ID o dato referenciado. 
+ * @param type $campoRef Nombre de campo de referencia.
+ * @param type $datoRef Dato de referencia. 
  * @return type Arreglo relacional de registro.
  */
-function extraerRegistroTabla($tabla, $campo, $idDato) {
+function extraerRegistroTabla($tabla, $campoRef, $datoRef) {
     $conexion = conectar();
     
-    $consulta = "SELECT * FROM $tabla WHERE $campo = $idDato";
+    $consulta = "SELECT * FROM $tabla WHERE $campoRef = $datoRef";
     
     return mysqli_fetch_array(consultar($conexion, $consulta));
+}
+
+/**
+ * Actualiza un dato de un registro mediante la tabla, campo a actualizar,
+ * dato a actualizar, campo de referencia y el dato de referencia.
+ * @param type $tabla Nombre de tabla.
+ * @param type $campo Nombre de campo de referencia.
+ * @param type $dato Dato de referencia.
+ * @param type $campoRef Campo de referencia.
+ * @param type $datoRef Dato de referencia.
+ * @return type Resultado de la consulta.
+ */
+function actualizarDatoRegistro($tabla, $campo, $dato, $campoRef, $datoRef) {
+    $conexion = conectar();
+    
+    $datoLim = mysqli_real_escape_string($conexion, $dato);
+    
+    $consulta = "UPDATE $tabla SET $campo = '$datoLim' WHERE $campoRef = $datoRef";
+    
+    echo $consulta;
+    
+    return consultar($conexion, $consulta);
 }
 
 /**
