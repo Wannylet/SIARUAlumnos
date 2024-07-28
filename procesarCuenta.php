@@ -27,6 +27,7 @@
     
     if (isset($_POST['nombreUsuario']) && $_POST['nombreUsuario'] !== $_SESSION['nombreUsuario']) {
         $nombreUsuario = $_POST['nombreUsuario'];
+        $_SESSION['nombreUsuario'] = $nombreUsuario;
         
         actualizarDatoRegistro("usuario", "nombreUsuario", $nombreUsuario, "idUsuario", $_SESSION['idUsuario']);
         
@@ -35,6 +36,7 @@
     
     if (!empty($_POST['contrasenaCuenta'])) {
         $contrasena = $_POST['contrasenaCuenta'];
+        $_SESSION['password'] = $contrasena;
         
         actualizarDatoRegistro("usuario", "password", $contrasena, "idUsuario", $_SESSION['idUsuario']);
         
@@ -43,6 +45,8 @@
     
     if ($cambio) {
         echo '<script language="javascript">alert("Cambios guardados correctamente.");</script>';
+    }else{
+        echo '<script language="javascript">alert("No ha habido cambios por guardar.");</script>';
     }
     
     echo '<script language="javascript">window.location="cuenta.php";</script>';

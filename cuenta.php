@@ -387,19 +387,16 @@ function interfazCuenta(){
                 });
                 
                 document.getElementById('formularioCuenta').addEventListener('submit', function(event) {
-                    const archivoImagenCuenta = document.getElementById('archivoImagenCuenta');
-                    
-                    const nombreUsuario = document.getElementById('nombreUsuario').value;
-                    const actualNombreUsuario = "<?php echo $_SESSION['nombreUsuario'] ?>";
-                    
                     const viejaContrasena = document.getElementById('viejaContrasena').value;
                     const contrasena = document.getElementById('contrasena').value;
                     const verificarContrasena = document.getElementById('verificarContrasena').value;
                     const actualContrasena = "<?php echo $_SESSION['password'] ?>";
                     
-                    
                     if (contrasena.length > 0) {
-                        if (viejaContrasena !== actualContrasena) {
+                        if (actualContrasena == contrasena) {
+                            event.preventDefault();
+                            alert('La nueva contraseña no puede ser igual a la contraseña actual.');
+                        }else if (viejaContrasena !== actualContrasena) {
                             event.preventDefault();
                             alert('La contraseña actual es incorrecta.');
                         }else if (contrasena.length < 8) {
@@ -423,11 +420,6 @@ function interfazCuenta(){
                     if (contrasena.length > 0 && contrasena !== verificarContrasena) {
                         event.preventDefault();
                         alert('La contraseña nueva y de verificación no coinciden.');
-                    }
-                    
-                    if (archivoImagenCuenta.files.length === 0 && nombreUsuario === actualNombreUsuario && contrasena.length === 0) {
-                        alert("HEY MAL");
-                        event.preventDefault();
                     }
                 });
                 
