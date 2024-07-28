@@ -4,7 +4,7 @@ require_once 'sesion.php';
 iniciarPrincipal();
 
 function iniciarPrincipal(){
-    if (iniciarSesion($_SESSION['usuario'], $_SESSION['contrasena'])) {
+    if (iniciarSesion($_SESSION['nombreUsuario'], $_SESSION['password'])) {
         interfazDocumentos();
     }else{
         header("Location: iniciarSesion.php");
@@ -13,9 +13,8 @@ function iniciarPrincipal(){
 }
 
 function interfazDocumentos(){
-    $datosUsuario = extraerRegistroTabla("usuario", "idUsuario", $_SESSION['idusuario']);
     
-    $datosPersonal = extraerRegistroTabla("datosPersonal", "fk_idUsuario", $_SESSION['idusuario']);
+    $datosPersonal = extraerRegistroTabla("datosPersonal", "fk_idUsuario", $_SESSION['idUsuario']);
     
     $cedula = $datosPersonal['cedula'];
     $pathCedula = $datosPersonal['pathCedula'];
@@ -55,7 +54,7 @@ function interfazDocumentos(){
             break;
     }
     
-    $imgCuenta = "assets/img/imgCustom.jpg";
+    $imgCuenta = "assets/img/user/profile-img-custom-" . $_SESSION['idUsuario'] . ".jpg";
     if (!is_file($imgCuenta) && !file_exists($imgCuenta)) {
         $imgCuenta = "assets/img/profile-img.jpg";
     }
@@ -124,7 +123,7 @@ function interfazDocumentos(){
                             <!-- Imagen de perfil -->
                             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                                 <img src=<?php echo $imgCuenta?> alt="Profile" class="rounded-circle" width="32" height="32">
-                                <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $datosUsuario['nombreUsuario']?></span>
+                                <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $_SESSION['nombreUsuario']?></span>
                             </a>
                             
                             <!-- Menu desplegable de perfil -->
@@ -132,7 +131,7 @@ function interfazDocumentos(){
                                 
                                 <!-- Título de usuario -->
                                 <li class="dropdown-header">
-                                    <h6><?php echo $datosUsuario['nombres'] . ' ' . $datosUsuario['apellidoP'] . ' ' . $datosUsuario['apellidoM']?></h6>
+                                    <h6><?php echo $_SESSION['nombres'] . ' ' . $_SESSION['apellidoP'] . ' ' . $_SESSION['apellidoM']?></h6>
                                     <span>Alumno</span>
                                 </li>
                                 

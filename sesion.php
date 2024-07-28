@@ -19,9 +19,19 @@ function destruirSesion(){
  * @param type $registro Arreglo relacional del que se asgnarán los valores.
  */
 function establecerSesion($registro){
-    $_SESSION['idusuario'] = $registro['idUsuario'];
-    $_SESSION['usuario'] = $registro['nombreUsuario'];
-    $_SESSION['contrasena'] = $registro['password'];
+    $_SESSION['idUsuario'] = $registro['idUsuario'];
+    $_SESSION['nombres'] = $registro['nombres'];
+    $_SESSION['apellidoP'] = $registro['apellidoP'];
+    $_SESSION['apellidoM'] = $registro['apellidoM'];
+    $_SESSION['tipoUsuario'] = $registro['tipoUsuario'];
+    $_SESSION['nombreUsuario'] = $registro['nombreUsuario'];
+    $_SESSION['password'] = $registro['password'];
+    $_SESSION['dob'] = $registro['dob'];
+    $_SESSION['genero'] = $registro['genero'];
+    $_SESSION['RFC'] = $registro['RFC'];
+    $_SESSION['CURP'] = $registro['CURP'];
+    $_SESSION['pathRFC'] = $registro['pathRFC'];
+    $_SESSION['pathCURP'] = $registro['pathCURP'];
 }
 
 /**
@@ -29,7 +39,7 @@ function establecerSesion($registro){
  * @return type Verdadero si está definida la variable o falso si no lo está.
  */
 function esSesionIniciada(){
-    return isset($_SESSION['idusuario']);
+    return isset($_SESSION['idUsuario']);
 }
 
 /**

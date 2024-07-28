@@ -1,11 +1,13 @@
 <?php
     require_once 'sesion.php';
     
+    $cambio = false;
+    
     if (isset($_FILES['archivoImagenCuenta']) && $_FILES['archivoImagenCuenta']['error'] === UPLOAD_ERR_OK && $_FILES['archivoImagenCuenta']['size'] > 0) {
         $imgCuenta = $_FILES['archivoImagenCuenta'];
         
-        $rutaInicial = $imgCuenta['tmp_name'];
-        $rutaDestino = "assets/img/imgCustom.jpg";
+        $rutaInicial = $imgCuenta['tmp_name'];;
+        $rutaDestino = "assets/img/user/profile-img-custom-" . $_SESSION['idUsuario'] . ".jpg";
         $directorio = dirname($rutaDestino);
         
         if (!is_dir($directorio)) {
@@ -19,21 +21,29 @@
         if (is_uploaded_file($rutaInicial)) {
             move_uploaded_file($rutaInicial, $rutaDestino);
         }
+        
+        $cambio  = true;
     }
     
-    if (isset($_POST['nombreUsuario'])) {
+    if (isset($_POST['nombreUsuario']) && $_POST['nombreUsuario'] !== $_SESSION['nombreUsuario']) {
         $nombreUsuario = $_POST['nombreUsuario'];
         
-        actualizarDatoRegistro("usuario", "nombreUsuario", $nombreUsuario, "idUsuario", $_SESSION['idusuario']);
+        actualizarDatoRegistro("usuario", "nombreUsuario", $nombreUsuario, "idUsuario", $_SESSION['idUsuario']);
+        
+        $cambio  = true;
     }
     
     if (!empty($_POST['contrasenaCuenta'])) {
         $contrasena = $_POST['contrasenaCuenta'];
         
-        actualizarDatoRegistro("usuario", "password", $contrasena, "idUsuario", $_SESSION['idusuario']);
+        actualizarDatoRegistro("usuario", "password", $contrasena, "idUsuario", $_SESSION['idUsuario']);
+        
+        $cambio  = true;
     }
     
-    echo '<script language="javascript">alert("Cambios guardados correctamente.");</script>';
+    if ($cambio) {
+        echo '<script language="javascript">alert("Cambios guardados correctamente.");</script>';
+    }
     
     echo '<script language="javascript">window.location="cuenta.php";</script>';
 ?>

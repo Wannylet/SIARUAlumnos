@@ -4,7 +4,7 @@ require_once 'sesion.php';
 iniciarPrincipal();
 
 function iniciarPrincipal(){
-    if (iniciarSesion($_SESSION['usuario'], $_SESSION['contrasena'])) {
+    if (iniciarSesion($_SESSION['nombreUsuario'], $_SESSION['password'])) {
         interfazCuenta();
     }else{
         header("Location: iniciarSesion.php");
@@ -13,12 +13,11 @@ function iniciarPrincipal(){
 }
 
 function interfazCuenta(){
-    $datosUsuario = extraerRegistroTabla("usuario", "idUsuario", $_SESSION['idusuario']);
     
-    $pathRFC = $datosUsuario['pathRFC'];
-    $pathCURP = $datosUsuario['pathCURP'];
-    $tipoUsuario = $datosUsuario['tipoUsuario'];
-    $genero = $datosUsuario['genero'];
+    $pathRFC = $_SESSION['pathRFC'];
+    $pathCURP = $_SESSION['pathCURP'];
+    $tipoUsuario = $_SESSION['tipoUsuario'];
+    $genero = $_SESSION['genero'];
     
     if (!is_file($pathRFC) && !file_exists($pathRFC)) {
         $pathRFC = "cuenta.php";
@@ -61,7 +60,7 @@ function interfazCuenta(){
             break;
     }
     
-    $imgCuenta = "assets/img/imgCustom.jpg";
+    $imgCuenta = "assets/img/user/profile-img-custom-" . $_SESSION['idUsuario'] . ".jpg";
     if (!is_file($imgCuenta) && !file_exists($imgCuenta)) {
         $imgCuenta = "assets/img/profile-img.jpg";
     }
@@ -130,7 +129,7 @@ function interfazCuenta(){
                             <!-- Imagen de perfil -->
                             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                                 <img src=<?php echo $imgCuenta?> alt="Profile" class="rounded-circle" width="32" height="32">
-                                <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $datosUsuario['nombreUsuario']?></span>
+                                <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $_SESSION['nombreUsuario']?></span>
                             </a>
                             
                             <!-- Menu desplegable de perfil -->
@@ -138,7 +137,7 @@ function interfazCuenta(){
                                 
                                 <!-- Título de usuario -->
                                 <li class="dropdown-header">
-                                    <h6><?php echo $datosUsuario['nombres'] . ' ' . $datosUsuario['apellidoP'] . ' ' . $datosUsuario['apellidoM']?></h6>
+                                    <h6><?php echo $_SESSION['nombres'] . ' ' . $_SESSION['apellidoP'] . ' ' . $_SESSION['apellidoM']?></h6>
                                     <span>Alumno</span>
                                 </li>
                                 
@@ -275,7 +274,7 @@ function interfazCuenta(){
                                         <a target="_blank" href=<?php echo $imgCuenta?>><img src=<?php echo $imgCuenta?> alt="Profile" class="rounded-circle" width="150" height="150"></a>
                                         <br>
                                         <br>
-                                        <input class="form-control" type="file" name="archivoImagenCuenta" title="Cambiar imagen de cuenta" accept=".jpg"/>
+                                        <input class="form-control" type="file" id="archivoImagenCuenta" name="archivoImagenCuenta" title="Cambiar imagen de cuenta" accept=".jpg"/>
                                     </div>
                                     <br>
                                     
@@ -291,12 +290,19 @@ function interfazCuenta(){
                                             <tr>
                                                 <td scope="row">Nombre de usuario</td>
                                                 <td>
-                                                    <input required maxlength="8" type="text" class="form-control" name="nombreUsuario" value=<?php echo $datosUsuario['nombreUsuario']?>>
+                                                    <input required maxlength="8" type="text" class="form-control" name="nombreUsuario" value=<?php echo $_SESSION['nombreUsuario']?>>
                                                 </td>
                                             </tr>
                                             
                                             <tr>
-                                                <td scope="row">Contraseña</td>
+                                                <td scope="row">Actual contraseña</td>
+                                                <td>
+                                                    <input maxlength="255" type="password" class="form-control" id="viejaContrasena">
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td scope="row">Nueva contraseña</td>
                                                 <td>
                                                     <input maxlength="255" type="password" class="form-control" id="contrasena" name="contrasenaCuenta">
                                                 </td>
@@ -312,7 +318,7 @@ function interfazCuenta(){
                                             <tr>
                                                 <td scope="row">Nombre personal</td>
                                                 <td>
-                                                    <?php echo $datosUsuario['nombres'] . ' ' . $datosUsuario['apellidoP'] . ' ' . $datosUsuario['apellidoM'] ?>
+                                                    <?php echo $_SESSION['nombres'] . ' ' . $_SESSION['apellidoP'] . ' ' . $_SESSION['apellidoM'] ?>
                                                 </td>
                                             </tr>
                                             
@@ -326,7 +332,7 @@ function interfazCuenta(){
                                             <tr>
                                                 <td scope="row">Fecha de nacimiento</td>
                                                 <td>
-                                                    <?php echo $datosUsuario['dob']?>
+                                                    <?php echo $_SESSION['dob']?>
                                                 </td>
                                             </tr>
                                             
@@ -341,7 +347,7 @@ function interfazCuenta(){
                                                 <td scope="row">RFC</td>
                                                 <td>
                                                     <a target="_blank" href=<?php echo $pathRFC?>>
-                                                        <?php echo $datosUsuario['RFC']?></a>
+                                                        <?php echo $_SESSION['RFC']?></a>
                                                 </td>
                                             </tr>
                                             
@@ -349,7 +355,7 @@ function interfazCuenta(){
                                                 <td scope="row">CURP</td>
                                                 <td>
                                                     <a target="_blank" href=<?php echo $pathCURP?>>
-                                                        <?php echo $datosUsuario['CURP']?></a>
+                                                        <?php echo $_SESSION['CURP']?></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -368,21 +374,35 @@ function interfazCuenta(){
             <!-- ======= Listeners de componentes ======= -->
             <script type="text/javascript">
                 document.getElementById('contrasena').addEventListener('input', function() {
+                    const viejaContrasena = document.getElementById('viejaContrasena');
                     const verificarContrasena = document.getElementById('verificarContrasena');
                     
                     if (this.value.length > 0) {
+                        viejaContrasena.setAttribute('required', 'required');
                         verificarContrasena.setAttribute('required', 'required');
                     } else {
+                        viejaContrasena.removeAttribute('required');
                         verificarContrasena.removeAttribute('required');
                     }
                 });
                 
                 document.getElementById('formularioCuenta').addEventListener('submit', function(event) {
+                    const archivoImagenCuenta = document.getElementById('archivoImagenCuenta');
+                    
+                    const nombreUsuario = document.getElementById('nombreUsuario').value;
+                    const actualNombreUsuario = "<?php echo $_SESSION['nombreUsuario'] ?>";
+                    
+                    const viejaContrasena = document.getElementById('viejaContrasena').value;
                     const contrasena = document.getElementById('contrasena').value;
                     const verificarContrasena = document.getElementById('verificarContrasena').value;
+                    const actualContrasena = "<?php echo $_SESSION['password'] ?>";
+                    
                     
                     if (contrasena.length > 0) {
-                        if (contrasena.length < 8) {
+                        if (viejaContrasena !== actualContrasena) {
+                            event.preventDefault();
+                            alert('La contraseña actual es incorrecta.');
+                        }else if (contrasena.length < 8) {
                             event.preventDefault();
                             alert('La contraseña debe contener al menos 8 caracteres.');
                         }else if(!contieneMinuscula(contrasena)){
@@ -398,14 +418,16 @@ function interfazCuenta(){
                             event.preventDefault();
                             alert('La contraseña debe contener al menos un carácter especial.');
                         }
-                    }else if (contrasena.length > 0 && contrasena.length < 8) {
-                        event.preventDefault();
-                        alert('La contraseña debe contener al menos 8 caracteres, una letra, un número y un carácter especial.');
                     }
                     
                     if (contrasena.length > 0 && contrasena !== verificarContrasena) {
                         event.preventDefault();
-                        alert('Las contraseñas no coinciden.');
+                        alert('La contraseña nueva y de verificación no coinciden.');
+                    }
+                    
+                    if (archivoImagenCuenta.files.length === 0 && nombreUsuario === actualNombreUsuario && contrasena.length === 0) {
+                        alert("HEY MAL");
+                        event.preventDefault();
                     }
                 });
                 
