@@ -57,6 +57,15 @@ function interfazPrincipal(){
             <!-- JQuery import -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             
+            <script>
+            function confirmLogout(event) {
+                event.preventDefault(); // Evita que el enlace se ejecute de inmediato
+                let confirmation = confirm("¿Está seguro que quiere cerrar la sesión?");
+                if (confirmation) {
+                    window.location.href = "cerrarSesion.php";
+                }
+            }
+            </script>
         </head>
         <body>
             <!-- ======= Barra superior (Header) ======= -->
@@ -193,7 +202,7 @@ function interfazPrincipal(){
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link collapsed" href="cerrarSesion.php">
+                        <a class="nav-link collapsed" href="#" onclick="confirmLogout(event)">
                             <i class="bi bi-box-arrow-in-right"></i>
                             <span>Cerrar sesión</span>
                         </a>
